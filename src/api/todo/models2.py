@@ -7,32 +7,10 @@ from beanie import PydanticObjectId
 
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
+from pydantic import BaseSettings
 
 def keyvault_name_as_attr(name: str) -> str:
     return name.replace("-", "_").upper()
-
-class Settings2():
-    def __init__(self, *args, **kwargs):
-        # Load secrets from keyvault
-        if self.AZURE_KEY_VAULT_ENDPOINT:
-            credential = DefaultAzureCredential()
-            keyvault_client = SecretClient(self.AZURE_KEY_VAULT_ENDPOINT, credential)
-            for secret in keyvault_client.list_properties_of_secrets():
-                setattr(
-                    self,
-                    keyvault_name_as_attr(secret.name),
-                    keyvault_client.get_secret(secret.name).value,
-                )
-
-    AZURE_POSTGRES_CONNECTION_STRING: str = ""
-    AZURE_POSTGRESS_DATABASE_NAME: str = "Todo"
-    AZURE_KEY_VAULT_ENDPOINT: Optional[str] = None
-    APPLICATIONINSIGHTS_CONNECTION_STRING: Optional[str] = None
-    APPLICATIONINSIGHTS_ROLENAME: Optional[str] = "API"
-
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
 
 class TodoList2(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)

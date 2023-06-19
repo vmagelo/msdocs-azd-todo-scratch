@@ -42,10 +42,8 @@ def originList():
 from .models import Settings, __beanie_models__
 
 from . import models2
-from .models2 import Settings2
 
 settings = Settings()
-settings2 = Settings2()
 
 app = FastAPI(
     description="Simple Todo API",
@@ -84,6 +82,9 @@ async def startup_event():
         database=client[settings.AZURE_COSMOS_DATABASE_NAME],
         document_models=__beanie_models__,
     )
+    print("Connected to Postgres")
+    print(settings.AZURE_POSTGRESQL_CONNECTION_STRING)
+
     # Create an engine for PostgreSQL database
-    engine = create_engine(settings2.AZURE_POSTGRES_CONNECTION_STRING)
+    engine = create_engine(settings.AZURE_POSTGRESQL_CONNECTION_STRING)
     SQLModel.metadata.create_all(engine)

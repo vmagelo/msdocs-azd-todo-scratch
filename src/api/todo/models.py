@@ -26,6 +26,8 @@ class Settings(BaseSettings):
                     keyvault_client.get_secret(secret.name).value,
                 )
 
+    AZURE_POSTGRESQL_CONNECTION_STRING: str = ""
+    AZURE_POSTGRESQL_DATABASE_NAME: str = "Todo"
     AZURE_COSMOS_CONNECTION_STRING: str = ""
     AZURE_COSMOS_DATABASE_NAME: str = "Todo"
     AZURE_KEY_VAULT_ENDPOINT: Optional[str] = None
