@@ -126,7 +126,7 @@ module postgres './app/db2.bicep' = {
   params: {
     accountName: !empty(postgresAccountName) ? postgresAccountName : '${abbrs.dBforPostgreSQLServers}${resourceToken}'
     databaseName: postgresDatabaseName
-    adminName: 'demoadmin'
+    postgresUser: 'demoadmin'
     postgresPassword: postgresPassword
     location: location
     tags: tags
@@ -192,7 +192,7 @@ output AZURE_COSMOS_CONNECTION_STRING_KEY string = cosmos.outputs.connectionStri
 output AZURE_COSMOS_DATABASE_NAME string = cosmos.outputs.databaseName
 output AZURE_POSTGRESQL_CONNECTION_STRING string = postgres.outputs.connectionString
 output AZURE_POSTGRESQL_DOMAIN_NAME string = postgres.outputs.endpoint
-output AZURE_POSTGRESQL_DATABASE_NAME string = postgres.outputs.datbaseName
+output AZURE_POSTGRESQL_DATABASE_NAME string = postgres.outputs.databaseName
 output AZURE_POSTGRESQL_DATABASE_USERNAME string = postgres.outputs.adminLogin
 
 // App outputs
