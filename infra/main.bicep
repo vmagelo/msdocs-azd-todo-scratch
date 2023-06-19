@@ -121,11 +121,11 @@ module cosmos './app/db.bicep' = {
 
 // The application database (Postgres)
 module postgres './app/db2.bicep' = {
-  name: 'postgresServer'
+  name: 'postgres'
   scope: rg
   params: {
     accountName: !empty(postgresAccountName) ? postgresAccountName : '${abbrs.dBforPostgreSQLServers}${resourceToken}'
-    databaseName: postgresDatabaseName
+    databaseName: 'Todo'
     postgresUser: 'demoadmin'
     postgresPassword: postgresPassword
     location: location

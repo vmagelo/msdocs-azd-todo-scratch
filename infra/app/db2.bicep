@@ -10,7 +10,7 @@ param databaseName string
 
 param keyVaultName string
 
-module postgresServer '../core/database/postgresql/flexibleserver.bicep' = {
+module postgres '../core/database/postgresql/flexibleserver.bicep' = {
   name: 'postgresql-server'
   scope: resourceGroup()
   params: {
@@ -37,12 +37,12 @@ module keyVaultSecrets '../core/security/keyvault-secret.bicep' = {
   scope: resourceGroup()
   params: {
     keyVaultName: keyVaultName
-    name: 'AZURE-POSTGRES-CONN-STRING'
-    secretValue: 'postgres://${postgresUser}:${postgresPassword}@${postgresServer.outputs.POSTGRES_DOMAIN_NAME}/${databaseName}'
+    name: 'AZURE-POSTGRES-CONNECTION-STRING'
+    secretValue: 'postgres://${postgresUser}:${postgresPassword}@${postgres.outputs.POSTGRES_DOMAIN_NAME}/${databaseName}'
   }
 }
 
-output endpoint string = postgresServer.outputs.POSTGRES_DOMAIN_NAME
+output endpoint string = postgres.outputs.POSTGRES_DOMAIN_NAME
 output databaseName string = databaseName
 output adminLogin string = postgresUser
-output connectionString string = 'postgres://${postgresUser}:"VALUEINKEYVAULT"@${postgresServer.outputs.POSTGRES_DOMAIN_NAME}/${databaseName}'
+output connectionString string = 'postgres://${postgresUser}:"VALUEINKEYVAULT"@${postgres.outputs.POSTGRES_DOMAIN_NAME}/${databaseName}'
