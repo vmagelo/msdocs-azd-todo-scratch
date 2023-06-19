@@ -31,7 +31,7 @@ def originList():
         "https://portal.azure.com",
         "https://ms.portal.azure.com",
     ]
-    
+ 
     if allowOrigins is not None:
         for origin in allowOrigins.split(","):
             print("Allowing requests from", origin, ". To change or disable, go to ", Path(__file__))
@@ -87,4 +87,3 @@ async def startup_event():
     # Create an engine for PostgreSQL database
     engine = create_engine(settings.AZURE_POSTGRES_CONNECTION_STRING)
     SQLModel.metadata.create_all(engine)
-
