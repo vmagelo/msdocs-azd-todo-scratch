@@ -85,5 +85,5 @@ async def startup_event():
         document_models=__beanie_models__,
     )
     # Create an engine for PostgreSQL database
-    engine = create_engine(settings.AZURE_POSTGRES_CONNECTION_STRING)
+    engine = create_engine(settings2.AZURE_POSTGRES_CONNECTION_STRING)
     SQLModel.metadata.create_all(engine)

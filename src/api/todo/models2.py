@@ -3,6 +3,7 @@ from enum import Enum
 from typing import Optional
 
 from sqlmodel import Field, SQLModel
+from beanie import PydanticObjectId
 
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
@@ -10,7 +11,7 @@ from azure.keyvault.secrets import SecretClient
 def keyvault_name_as_attr(name: str) -> str:
     return name.replace("-", "_").upper()
 
-class Settings():
+class Settings2():
     def __init__(self, *args, **kwargs):
         # Load secrets from keyvault
         if self.AZURE_KEY_VAULT_ENDPOINT:
@@ -23,8 +24,8 @@ class Settings():
                     keyvault_client.get_secret(secret.name).value,
                 )
 
-    AZURE_COSMOS_CONNECTION_STRING: str = ""
-    AZURE_COSMOS_DATABASE_NAME: str = "Todo"
+    AZURE_POSTGRES_CONNECTION_STRING: str = ""
+    AZURE_POSTGRESS_DATABASE_NAME: str = "Todo"
     AZURE_KEY_VAULT_ENDPOINT: Optional[str] = None
     APPLICATIONINSIGHTS_CONNECTION_STRING: Optional[str] = None
     APPLICATIONINSIGHTS_ROLENAME: Optional[str] = "API"
@@ -40,7 +41,7 @@ class TodoList2(SQLModel, table=True):
     createdDate: Optional[datetime] = Field(default=None)
     updatedDate: Optional[datetime] = Field(default=None)
 
-class CreateUpdateTodoList2(BaseModel):
+class CreateUpdateTodoList2(SQLModel):
     name: str
     description: Optional[str] = None
 
@@ -50,7 +51,8 @@ class TodoState2(Enum):
     DONE = "done"
 
 class TodoItem2(SQLModel, table=True):
-    listId: PydanticObjectId
+    id: Optional[int] = Field(default=None, primary_key=True)
+    listId: str  # PydanticObjectId
     name: str
     description: Optional[str] = None
     state: Optional[TodoState2] = None
