@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: msdocs-todo-python-fastapi-postgres-aca
+metadata:
+  template: msdocs-todo-python-fastapi-postgres-aca@0.0.1-beta
+services:
+  web:
+    project: ./src/web
+    language: js
+    host: containerapp
+  api:
+    project: ./src/api
+    language: python
+    host: containerapp
