@@ -11,7 +11,7 @@ param databaseName string
 param keyVaultName string
 
 module postgresServer '../core/database/postgresql/flexibleserver.bicep' = {
-  name: 'postgresql'
+  name: 'postgresql-server'
   scope: resourceGroup()
   params: {
     name: accountName
