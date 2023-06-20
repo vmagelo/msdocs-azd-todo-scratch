@@ -6,10 +6,29 @@ from urllib.parse import urljoin
 from beanie import PydanticObjectId
 from fastapi import HTTPException, Response
 from starlette.requests import Request
+from sqlmodel import Session, select
 
-from .app import app
+from .app import app, engine
 from .models import (CreateUpdateTodoItem, CreateUpdateTodoList, TodoItem,
                      TodoList, TodoState)
+from .models2 import (CreateUpdateTodoItem2, CreateUpdateTodoList2, TodoItem2,
+                        TodoList2, TodoState2)
+
+@app.get("/lists2", response_model=List[TodoList2], response_model_by_alias=False)
+async def get_lists2(
+    top: Optional[int] = None, skip: Optional[int] = None
+) -> List[TodoList2]:
+    """
+    Get all Todo lists
+
+    Optional arguments:
+
+    - **top**: Number of lists to return
+    - **skip**: Number of lists to skip
+    """
+    with Session(engine) as session:
+        query = session.exec(select(TodoList2).offset(skip).limit(top))
+        return query.all()
 
 
 @app.get("/lists", response_model=List[TodoList], response_model_by_alias=False)
@@ -27,6 +46,19 @@ async def get_lists(
     query = TodoList.all().skip(skip).limit(top)
     return await query.to_list()
 
+
+@app.post("/lists2", response_model=TodoList2, response_model_by_alias=False, status_code=201)
+async def create_list2(body: CreateUpdateTodoList2, request: Request, response: Response) -> TodoList2:
+    """
+    Create a new Todo list
+    """
+    todo_list2 = TodoList2(**body.dict(), createdDate=datetime.utcnow())
+    session = Session(engine)
+    session.add(todo_list2)
+    session.commit()
+    response.headers["Location"] = urljoin(str(request.base_url), "lists/{0}".format(str(todo_list2.id)))
+    session.close()
+    return todo_list2
 
 @app.post("/lists", response_model=TodoList, response_model_by_alias=False, status_code=201)
 async def create_list(body: CreateUpdateTodoList, request: Request, response: Response) -> TodoList:

@@ -44,6 +44,7 @@ from .models import Settings, __beanie_models__
 from . import models2
 
 settings = Settings()
+engine = create_engine(settings.AZURE_POSTGRESQL_CONNECTION_STRING)
 
 app = FastAPI(
     description="Simple Todo API",
@@ -86,5 +87,4 @@ async def startup_event():
     print(settings.AZURE_POSTGRESQL_CONNECTION_STRING)
 
     # Create an engine for PostgreSQL database
-    engine = create_engine(settings.AZURE_POSTGRESQL_CONNECTION_STRING)
     SQLModel.metadata.create_all(engine)

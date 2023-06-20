@@ -30,7 +30,7 @@ class TodoState2(Enum):
 
 class TodoItem2(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    listId: str  # PydanticObjectId
+    listId: int = Field(default=None, foreign_key="todolist2.id")
     name: str
     description: Optional[str] = None
     state: Optional[TodoState2] = None
