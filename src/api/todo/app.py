@@ -39,9 +39,9 @@ def originList():
         
     return origins
     
-from .models import Settings, __beanie_models__
+from .models import Settings
 
-from . import models2
+from . import models
 
 settings = Settings()
 engine = create_engine(settings.AZURE_POSTGRESQL_CONNECTION_STRING)
@@ -76,15 +76,5 @@ from . import routes  # NOQA
 
 @app.on_event("startup")
 async def startup_event():
-    client = motor.motor_asyncio.AsyncIOMotorClient(
-        settings.AZURE_COSMOS_CONNECTION_STRING
-    )
-    await init_beanie(
-        database=client[settings.AZURE_COSMOS_DATABASE_NAME],
-        document_models=__beanie_models__,
-    )
-    print("Connected to Postgres")
-    print(settings.AZURE_POSTGRESQL_CONNECTION_STRING)
-
     # Create an engine for PostgreSQL database
     SQLModel.metadata.create_all(engine)

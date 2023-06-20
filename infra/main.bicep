@@ -187,8 +187,6 @@ module apimApi './app/apim-api.bicep' = if (useAPIM) {
 }
 
 // Data outputs
-output AZURE_COSMOS_CONNECTION_STRING_KEY string = cosmos.outputs.connectionStringKey
-output AZURE_COSMOS_DATABASE_NAME string = cosmos.outputs.databaseName
 output AZURE_POSTGRESQL_CONNECTION_STRING string = postgres.outputs.connectionString
 output AZURE_POSTGRESQL_DOMAIN_NAME string = postgres.outputs.endpoint
 output AZURE_POSTGRESQL_DATABASE_NAME string = postgres.outputs.databaseName
