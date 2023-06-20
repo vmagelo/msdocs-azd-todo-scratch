@@ -15,6 +15,7 @@ uvicorn = "*"
 beanie = "*"
 python-dotenv = "*"
 sqlmodel = "^0.0.8"
+asyncpg = "^0.27.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
