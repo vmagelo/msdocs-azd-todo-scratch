@@ -1,40 +1,48 @@
-param accountName string
-param location string = resourceGroup().location
 param tags object = {}
+param location string = resourceGroup().location
+param accountName string
 
-param collections array = [
-  {
-    name: 'TodoList'
-    id: 'TodoList'
-    shardKey: 'Hash'
-    indexKey: '_id'
-  }
-  {
-    name: 'TodoItem'
-    id: 'TodoItem'
-    shardKey: 'Hash'
-    indexKey: '_id'
-  }
-]
-param databaseName string = ''
+@secure()
+param postgresPassword string
+
+param postgresUser string
+param databaseName string
+
 param keyVaultName string
 
-// Because databaseName is optional in main.bicep, we make sure the database name is set here.
-var defaultDatabaseName = 'Todo'
-var actualDatabaseName = !empty(databaseName) ? databaseName : defaultDatabaseName
-
-module cosmos '../core/database/cosmos/mongo/cosmos-mongo-db.bicep' = {
-  name: 'cosmos-mongo'
+module postgres '../core/database/postgresql/flexibleserver.bicep' = {
+  name: 'postgresql-server'
+  scope: resourceGroup()
   params: {
-    accountName: accountName
-    databaseName: actualDatabaseName
+    name: accountName
     location: location
-    collections: collections
-    keyVaultName: keyVaultName
     tags: tags
+    sku: {
+      name: 'Standard_B1ms'
+      tier: 'Burstable'
+    }
+    storage: {
+      storageSizeGB: 32
+    }
+    version: '14' // 14 is the latest supported version with 15 Coming Soon
+    administratorLogin: postgresUser
+    administratorLoginPassword: postgresPassword
+    databaseNames: [databaseName]
+    allowAzureIPsFirewall: true
   }
 }
 
-output connectionStringKey string = cosmos.outputs.connectionStringKey
-output databaseName string = cosmos.outputs.databaseName
-output endpoint string = cosmos.outputs.endpoint
+module keyVaultSecrets '../core/security/keyvault-secret.bicep' = {
+  name: 'keyvault-secret-AZURE-POSTGRESQL-CONNECTION-STRING'
+  scope: resourceGroup()
+  params: {
+    keyVaultName: keyVaultName
+    name: 'AZURE-POSTGRESQL-CONNECTION-STRING'
+    secretValue: 'postgresql://${postgresUser}:${postgresPassword}@${postgres.outputs.POSTGRES_DOMAIN_NAME}/${databaseName}'
+  }
+}
+
+output endpoint string = postgres.outputs.POSTGRES_DOMAIN_NAME
+output databaseName string = databaseName
+output adminLogin string = postgresUser
+output connectionString string = 'AZURE-POSTGRESQL-CONNECTION-STRING'
