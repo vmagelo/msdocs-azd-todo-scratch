@@ -5,8 +5,8 @@ export enum TodoItemState {
 }
 
 export interface TodoItem {
-    id?: string
-    listId: string
+    id?: number
+    listId: number
     name: string
     state: TodoItemState
     description?: string
