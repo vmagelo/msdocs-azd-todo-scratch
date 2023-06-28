@@ -18,8 +18,6 @@ param applicationInsightsDashboardName string = ''
 param applicationInsightsName string = ''
 param containerAppsEnvironmentName string = ''
 param containerRegistryName string = ''
-param cosmosAccountName string = ''
-param cosmosDatabaseName string = ''
 param postgresAccountName string = ''
 param keyVaultName string = ''
 param logAnalyticsName string = ''
@@ -105,21 +103,9 @@ module api './app/api.bicep' = {
   }
 }
 
-// The application database
-module cosmos './app/db.bicep' = {
-  name: 'cosmos'
-  scope: rg
-  params: {
-    accountName: !empty(cosmosAccountName) ? cosmosAccountName : '${abbrs.documentDBDatabaseAccounts}${resourceToken}'
-    databaseName: cosmosDatabaseName
-    location: location
-    tags: tags
-    keyVaultName: keyVault.outputs.name
-  }
-}
 
 // The application database (Postgres)
-module postgres './app/db2.bicep' = {
+module postgres './app/db.bicep' = {
   name: 'postgres'
   scope: rg
   params: {
